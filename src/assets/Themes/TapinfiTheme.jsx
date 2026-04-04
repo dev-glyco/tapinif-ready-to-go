@@ -27,25 +27,92 @@ function XIcon({ size = 20, color = "currentColor" }) {
 function DiamondPattern() {
   return (
     <svg
-      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}
+      style={{
+        position: "absolute",
+        inset: 0,
+        width: "100%",
+        height: "100%",
+        pointerEvents: "none",
+      }}
       viewBox="0 0 400 220"
       xmlns="http://www.w3.org/2000/svg"
       preserveAspectRatio="xMidYMid slice"
       aria-hidden="true"
     >
       <defs>
-        <pattern id="tapinfi-diamonds" x="0" y="0" width="58" height="58" patternUnits="userSpaceOnUse">
-          <polygon points="29,2 56,29 29,56 2,29" fill="none" stroke="rgba(100,160,210,0.22)" strokeWidth="1" />
+
+        {/*DIAGONAL GRADIENT (TOP RIGHT → BOTTOM LEFT) */}
+        <linearGradient id="bg-gradient" x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#3a8fb5" />
+          <stop offset="40%" stopColor="#6fb7d6" />
+          <stop offset="100%" stopColor="#ffffff" />
+        </linearGradient>
+
+        {/* GLOW EFFECT */}
+        <radialGradient id="diamond-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="rgba(255,255,255,0.8)" />
+          <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+        </radialGradient>
+
+        {/* 🔷 ENHANCED DIAMOND PATTERN */}
+        <pattern
+          id="tapinfi-diamonds"
+          x="0"
+          y="0"
+          width="64"
+          height="64"
+          patternUnits="userSpaceOnUse"
+        >
+          <polygon
+            points="32,4 60,32 32,60 4,32"
+            fill="none"
+            stroke="rgba(255,255,255,0.25)"
+            strokeWidth="1.2"
+          />
+          <polygon
+            points="32,10 54,32 32,54 10,32"
+            fill="rgba(255,255,255,0.08)"
+          />
         </pattern>
+
       </defs>
+
+      {/* BACKGROUND GRADIENT */}
+      <rect width="400" height="220" fill="url(#bg-gradient)" />
+
+      {/*PATTERN OVERLAY */}
       <rect width="400" height="220" fill="url(#tapinfi-diamonds)" />
-      <polygon points="300,10 370,80 300,150 230,80" fill="none" stroke="rgba(100,160,210,0.13)" strokeWidth="1.5" />
-      <polygon points="320,60 390,130 320,200 250,130" fill="none" stroke="rgba(100,160,210,0.08)" strokeWidth="1" />
-      <polygon points="-30,80 40,150 -30,220 -100,150" fill="none" stroke="rgba(100,160,210,0.10)" strokeWidth="1.2" />
+
+      {/*LARGE ABSTRACT DIAMONDS (DEPTH LAYER) */}
+      <polygon
+        points="310,20 390,100 310,180 230,100"
+        fill="url(#diamond-glow)"
+        opacity="0.35"
+      />
+
+      <polygon
+        points="260,0 340,80 260,160 180,80"
+        fill="none"
+        stroke="rgba(255,255,255,0.25)"
+        strokeWidth="1.5"
+      />
+
+      <polygon
+        points="80,40 140,100 80,160 20,100"
+        fill="rgba(255,255,255,0.06)"
+      />
+
+      {/* SOFT LIGHT OVERLAY */}
+      <rect
+        width="400"
+        height="220"
+        fill="url(#bg-gradient)"
+        opacity="0.15"
+      />
+
     </svg>
   );
 }
-
 export default function TapinfiTheme({ profile }) {
   if (!profile) return null;
 
@@ -403,9 +470,13 @@ export default function TapinfiTheme({ profile }) {
                 </span>
                 <div
                   style={{
-                    width: 50,
+                    width: 70,
                     alignSelf: "stretch",
-                    background: navy,
+                    background: "linear-gradient(90deg, #0f2233 0%, #1c4f6b 50%, #4f8fa3 100%)",
+                    boxShadow: `
+                      0 10px 25px rgba(15, 34, 51, 0.4),
+                      0 4px 10px rgba(79, 143, 163, 0.3),
+                      0 0 20px rgba(79, 143, 163, 0.25)`,
                     borderRadius: "0 16px 16px 0",
                     display: "flex",
                     alignItems: "center",
@@ -430,14 +501,17 @@ export default function TapinfiTheme({ profile }) {
               marginRight: "auto",
               padding: "15px 0",
               borderRadius: 14,
-              background: "linear-gradient(135deg, #132e45 0%, #1e5070 100%)",
+              background: "linear-gradient(90deg, #0f2233 0%, #1c4f6b 50%, #4f8fa3 100%)",
+              boxShadow: `
+                0 10px 25px rgba(15, 34, 51, 0.4),
+                0 4px 10px rgba(79, 143, 163, 0.3),
+                0 0 20px rgba(79, 143, 163, 0.25)`,
               color: "#fff",
               fontSize: 15,
               fontWeight: 700,
               border: "none",
               cursor: "pointer",
-              letterSpacing: 0.5,
-              boxShadow: "0 6px 24px rgba(20,50,80,0.35)",
+              letterSpacing: 0.5
             }}
           >
             Save Contact
