@@ -306,6 +306,7 @@ export default function TapinfiTheme({ profile }) {
                     height: 90,
                     marginTop: 30,
                     marginLeft: 50,
+                    marginRight: 30,
                     overflow: "hidden"
                   }}
                 >
