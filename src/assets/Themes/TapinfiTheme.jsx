@@ -188,7 +188,7 @@ export default function TapinfiTheme({ profile }) {
   // its top starts at (COVER_HEIGHT - PIC_H/2) => straddles the join
   const PIC_TOP      = COVER_HEIGHT - PIC_H / 2;   // ~120px from top
   // Card starts behind the bottom half of the pic
-  const CARD_TOP     = COVER_HEIGHT - 16;  // card slides up just under cover, rounded corners peek up
+  const CARD_TOP     = COVER_HEIGHT - 25;  // card slides up just under cover, rounded corners peek up
 
   return (
     <div
@@ -267,7 +267,7 @@ export default function TapinfiTheme({ profile }) {
             <div
               style={{
                 flex: 1,
-                marginTop: 15,   // pulls text up to visually align better with profile pic
+                marginTop: 30,   // pulls text up to visually align better with profile pic
                 paddingRight: 5,
                 borderRight: "3px solid rgba(0, 0, 0, 0.75)",
               }}
@@ -286,12 +286,12 @@ export default function TapinfiTheme({ profile }) {
                 {full_name}
               </h2>
               {role && (
-                <p style={{ fontSize: 13, color: "#4a6a82", marginTop: 5, marginBottom: 0, fontWeight: 500 }}>
+                <p style={{ fontSize: 13, color: "#27475f", marginTop: 5, marginBottom: 0, fontWeight: 500 }}>
                   {role}
                 </p>
               )}
               {company && (
-                <p style={{ fontSize: 13, color: "#4a6a82", marginTop: 2, marginBottom: 0, fontWeight: 500 }}>
+                <p style={{ fontSize: 13, color: "#27475f", marginTop: 2, marginBottom: 0, fontWeight: 500 }}>
                   {company}
                 </p>
               )}
@@ -304,7 +304,7 @@ export default function TapinfiTheme({ profile }) {
                   style={{
                     width: 90,
                     height: 90,
-                    marginTop: 15,
+                    marginTop: 30,
                     marginLeft: 50,
                     overflow: "hidden"
                   }}
