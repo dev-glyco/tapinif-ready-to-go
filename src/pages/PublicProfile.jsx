@@ -8,6 +8,7 @@ import DirectorProfileTheme from "../assets/Themes/DirectorProfileTheme";
 import PinkBusinessCardTheme from "../assets/Themes/PinkBusinessCardTheme";
 import BusinessTheme from "../assets/Themes/BusinessTheme";
 import EngineerTheme from "../assets/Themes/EngineerTheme";
+import TapinfiTheme from "../assets/Themes/TapinfiTheme";
 
 const themeComponents = {
   "BlueTheme": BlueTheme,
@@ -16,6 +17,7 @@ const themeComponents = {
   "PinkBusinessCardTheme": PinkBusinessCardTheme,
   "BusinessTheme": BusinessTheme,
   "EngineerTheme": EngineerTheme,
+  "TapinfiTheme": TapinfiTheme
 };
 
 export default function PublicProfile() {
@@ -34,7 +36,7 @@ export default function PublicProfile() {
           .select(
             `id, full_name, username, role, company, about, profile_pic_url, cover_pic_url,
              phone_number, user_email, website_url, portfolio_url, facebook_url, instagram_url,
-             linkedin_url, twitter_url, whatsapp_url, publish,themeid`
+             linkedin_url, twitter_url, whatsapp_url, publish,themeid, map_url, company_logo_url`
           )
           .eq("username", username)
           .single();

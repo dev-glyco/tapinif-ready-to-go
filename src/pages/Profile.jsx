@@ -127,12 +127,35 @@ function ImageUploader({ label, currentUrl, onUpload, accept = "image/*", maxSiz
 /* --------------------
    Step components
    -------------------- */
-function StepImages({ profile, onUploadProfile, onUploadCover }) {
+function StepImages({ profile, onUploadProfile, onUploadCover, onUploadCompanyLogo }) {
   return (
     <div>
       <h3 className="text-lg font-semibold mb-3">Profile Pictures</h3>
-      <ImageUploader label="Profile Photo" currentUrl={profile.profile_pic_url} onUpload={onUploadProfile} maxSizeMB={0.5} maxDim={800} />
-      <ImageUploader label="Cover Photo" currentUrl={profile.cover_pic_url} onUpload={onUploadCover} maxSizeMB={1} maxDim={1600} />
+
+      <ImageUploader
+        label="Profile Photo"
+        currentUrl={profile.profile_pic_url}
+        onUpload={onUploadProfile}
+        maxSizeMB={0.5}
+        maxDim={800}
+      />
+
+      <ImageUploader
+        label="Cover Photo"
+        currentUrl={profile.cover_pic_url}
+        onUpload={onUploadCover}
+        maxSizeMB={1}
+        maxDim={1600}
+      />
+
+      {/* NEW COMPANY LOGO */}
+      <ImageUploader
+        label="Company Logo"
+        currentUrl={profile.company_logo_url}
+        onUpload={onUploadCompanyLogo}
+        maxSizeMB={0.5}
+        maxDim={500}
+      />
     </div>
   );
 }
@@ -211,6 +234,16 @@ function StepContact({ profile, setProfile, errors }) {
             setProfile((p) => ({ ...p, portfolio_url: e.target.value }))
           }
           placeholder="https://yourportfolio.com / Google Drive PDF"
+        />
+      </Field>
+
+      <Field label="Company Location (Google Maps Link)">
+        <TextInput
+          value={profile.map_url || ""}
+          onChange={(e) =>
+            setProfile((p) => ({ ...p, map_url: e.target.value }))
+          }
+          placeholder="https://maps.google.com/..."
         />
       </Field>
       {/* END NEW */}
@@ -470,34 +503,57 @@ export default function ProfileWizard() {
   /* ----------
      Image upload handlers
   ---------- */
-  const uploadImageToStorage = async (file, type) => {
-    if (!user) throw new Error("No user");
-    const timestamp = Date.now();
-    const filePath = `${type}_${user.id}_${timestamp}.webp`;
+const uploadImageToStorage = async (file, type) => {
+  if (!user) throw new Error("No user");
 
-    // delete old file if present
-    const columnKey = type === "cover" ? "cover_pic_url" : "profile_pic_url";
-    const oldUrl = profile[columnKey];
-    if (oldUrl) {
-      try {
-        const oldFile = oldUrl.split("/").pop().split("?")[0];
-        await supabase.storage.from("profile_pics").remove([oldFile]);
-      } catch (e) {
-        // ignore deletion error
-      }
-    }
+  const timestamp = Date.now();
 
-    const { error: uploadError } = await supabase.storage.from("profile_pics").upload(filePath, file);
-    if (uploadError) throw uploadError;
+  let filePath = "";
+  let columnKey = "";
 
-    const { data } = supabase.storage.from("profile_pics").getPublicUrl(filePath);
-    const imageUrl = `${data.publicUrl}?t=${timestamp}`;
+  if (type === "profile") {
+    filePath = `profile_${user.id}_${timestamp}.webp`;
+    columnKey = "profile_pic_url";
+  }
 
-    const { error: dbError } = await supabase.from("users").upsert({ id: user.id, [columnKey]: imageUrl });
-    if (dbError) throw dbError;
+  if (type === "cover") {
+    filePath = `cover_${user.id}_${timestamp}.webp`;
+    columnKey = "cover_pic_url";
+  }
 
-    setProfile((p) => ({ ...p, [columnKey]: imageUrl }));
-  };
+  if (type === "company") {
+    filePath = `company_${user.id}_${timestamp}.webp`; // ✅ PREFIX
+    columnKey = "company_logo_url";
+  }
+
+  // delete old
+  const oldUrl = profile[columnKey];
+  if (oldUrl) {
+    try {
+      const oldFile = oldUrl.split("/").pop().split("?")[0];
+      await supabase.storage.from("profile_pics").remove([oldFile]);
+    } catch {}
+  }
+
+  const { error } = await supabase.storage
+    .from("profile_pics")
+    .upload(filePath, file);
+
+  if (error) throw error;
+
+  const { data } = supabase.storage
+    .from("profile_pics")
+    .getPublicUrl(filePath);
+
+  const imageUrl = `${data.publicUrl}?t=${timestamp}`;
+
+  await supabase.from("users").upsert({
+    id: user.id,
+    [columnKey]: imageUrl,
+  });
+
+  setProfile((p) => ({ ...p, [columnKey]: imageUrl }));
+};
 
   /* ----------
      Validation per-step
@@ -582,6 +638,8 @@ export default function ProfileWizard() {
         // lock username & fullname so app cannot change them anymore
         is_username_locked: true,
         is_fullname_locked: false,
+        map_url: profile.map_url,
+        company_logo_url: profile.company_logo_url,
       };
 
       const { error } = await supabase.from("users").upsert(update);
@@ -615,7 +673,14 @@ export default function ProfileWizard() {
         </div>
 
         <div className="space-y-6">
-          {step === 0 && <StepImages profile={profile} onUploadProfile={(file) => uploadImageToStorage(file, "profile")} onUploadCover={(file) => uploadImageToStorage(file, "cover")} />}
+         {step === 0 && (
+            <StepImages
+              profile={profile}
+              onUploadProfile={(file) => uploadImageToStorage(file, "profile")}
+              onUploadCover={(file) => uploadImageToStorage(file, "cover")}
+              onUploadCompanyLogo={(file) => uploadImageToStorage(file, "company")}
+            />
+          )}
           {step === 1 && <StepBasic profile={profile} setProfile={setProfile} errors={errors} readOnlyUsername={readOnlyUsername} />}
           {step === 2 && <StepContact profile={profile} setProfile={setProfile} errors={errors} />}
           {step === 3 && <StepPreview profile={profile} />}
