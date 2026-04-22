@@ -387,10 +387,10 @@ export default function TapinfiTheme({ profile }) {
           <button
             onClick={() => window.history.back()}
             aria-label="Back"
-            className="w-9 h-9 flex items-center justify-center rounded-full shadow-sm hover:bg-white transition"
-            style={{ background: "rgba(255,255,255,0.72)", backdropFilter: "blur(6px)" }}
+            className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white transition"
+            style={{ background: "rgba(255, 255, 255, 0)"}}
           >
-            <FaArrowLeft size={16} color={navy} />
+            {/* <FaArrowLeft size={16} color={navy} /> */}
           </button>
           <div className="flex items-center gap-2">
             <button
